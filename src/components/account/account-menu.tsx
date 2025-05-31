@@ -17,9 +17,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { setThemeData } from "@/toolkit/slices/theme-slice";
 import AppDrawer from "@/common/app-drawer";
 import AppThemeBox from "./app-theme-box";
-import { signOut, useSession } from "next-auth/react";
+// import { signOut, useSession } from "next-auth/react";
 import { CircularProgress } from "@mui/material";
-import { stringAvatar } from "./account-helper";
+// import { stringAvatar } from "./account-helper";
 import { useRouter } from "next/navigation";
 
 export default function AccountMenu() {
@@ -37,15 +37,15 @@ export default function AccountMenu() {
 
   const themeData = useSelector((state: any) => state.theme);
 
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
   const dispatch = useDispatch();
 
-  const signOutHandler = async (e: any) => {
-    e.preventDefault();
-    setIsLoading(true);
-    await signOut({ callbackUrl: "/", redirect: true });
-  };
+  // const signOutHandler = async (e: any) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   await signOut({ callbackUrl: "/", redirect: true });
+  // };
 
   return (
     <React.Fragment>
@@ -61,7 +61,8 @@ export default function AccountMenu() {
           >
             <Avatar
               variant="square"
-              {...stringAvatar(session?.user?.fullName)}
+            // {...stringAvatar(session?.user?.fullName)}
+            // src={session?.user?.image}
             />
           </IconButton>
         </Tooltip>
@@ -132,12 +133,12 @@ export default function AccountMenu() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={signOutHandler}>
+        {/* <MenuItem onClick={signOutHandler}>
           <ListItemIcon>
             {isLoading ? <CircularProgress /> : <Logout fontSize="small" />}
           </ListItemIcon>
           Logout
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
       {themeData.isSidebarOpen && (
         <AppDrawer

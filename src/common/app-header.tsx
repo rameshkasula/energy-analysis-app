@@ -8,15 +8,9 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useDispatch } from "react-redux";
 import { setThemeData } from "@/toolkit/slices/theme-slice";
-// import ThemeToggle from "./theme-toggle";
-import AccountMenu from "@/components/account/account-menu";
-import { useSession } from "next-auth/react";
-import { Button } from "@mui/material";
-import Link from "next/link";
 
 export default function AppHeader() {
   const dispatch = useDispatch();
-  const { status } = useSession();
   return (
     <Box
       sx={{
@@ -68,20 +62,7 @@ export default function AppHeader() {
           <Typography noWrap variant="h6" component="div" sx={{ flexGrow: 1 }}>
             News
           </Typography>
-          {status == "loading" ? (
-            ""
-          ) : status == "authenticated" ? (
-            <AccountMenu />
-          ) : (
-            <Button
-              size="small"
-              LinkComponent={Link}
-              href="/auth/sign-in"
-              color="inherit"
-            >
-              Login
-            </Button>
-          )}
+
           {/* <ThemeToggle /> */}
         </Toolbar>
       </AppBar>
