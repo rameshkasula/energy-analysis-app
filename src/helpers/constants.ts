@@ -1,5 +1,5 @@
 export const ENV_VARIABLES = {
-  baseURL: "http://localhost:5000/api",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   dummyURL: process.env.NEXT_PUBLIC_BASE_URL,
   AUTH_SECRET: process.env.AUTH_SECRET || "secret",
   authUrl: process.env.NEXTAUTH_URL || "http://localhost:5000/api",
