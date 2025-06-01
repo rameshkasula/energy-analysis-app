@@ -57,6 +57,15 @@ export default function WorkspaceHome() {
     return (
         <Box>
 
+
+
+            <Box sx={{ mt: 2 }}>
+                <DesignStatsCard
+                    totalDesigns={designsStatsData?.totalDesigns || 0}
+                    cityStats={designsStatsData?.cityStats || []}
+                />
+            </Box>
+
             <Card sx={{ mt: 2, p: 2 }}>
                 <Typography variant="h6" gutterBottom>Electricity Rates</Typography>
                 <LineChartComponent
@@ -66,13 +75,6 @@ export default function WorkspaceHome() {
                     height={320}
                 />
             </Card>
-
-            <Box sx={{ mt: 2 }}>
-                <DesignStatsCard
-                    totalDesigns={designsStatsData?.totalDesigns || 0}
-                    cityStats={designsStatsData?.cityStats || []}
-                />
-            </Box>
         </Box>
     );
 }
