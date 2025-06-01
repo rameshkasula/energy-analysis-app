@@ -11,6 +11,7 @@ import ElectricBoltIcon from '@mui/icons-material/ElectricBolt';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import SquareFootIcon from '@mui/icons-material/SquareFoot';
 import useCurrency from "@/hooks/curreny-hook";
+import { dateFormatter } from "@/helpers/constants";
 
 const ViewDesignAnalysis = () => {
     const dispatch = useDispatch();
@@ -62,7 +63,7 @@ const ViewDesignAnalysis = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
                         <AccessTimeIcon sx={{ color: 'text.secondary', fontSize: 16 }} />
                         <Typography variant="caption" color="text.secondary">
-                            {new Date(singleAnalysis?.timestamp).toLocaleString()}
+                            {dateFormatter(singleAnalysis?.timestamp, "DATE_TIME_AM_PM")}
                         </Typography>
                     </Box>
 

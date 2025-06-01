@@ -19,7 +19,7 @@ export const useElectricityRatesColumns = () => {
                 },
             },
             {
-                accessorKey: "createdAt", header: "Created At", size: 120,
+                accessorKey: "updatedAt", header: "Last Updated", size: 120,
                 Cell: ({ cell }: any) => {
                     const date = cell.getValue() || "";
                     return dateFormatter(date, "DATE_TIME_AM_PM");

@@ -2,7 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setThemeData } from "@/toolkit/slices/theme-slice";
 import AppDrawer from "@/common/app-drawer";
 import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
-import { STATUS, STATUS_COLORS } from "@/helpers/constants";
+import { dateFormatter, STATUS, STATUS_COLORS } from "@/helpers/constants";
+import { CustomRow } from "@/common/app-drawer-row";
 
 const ViewSolarRadiation = () => {
     const dispatch = useDispatch();
@@ -50,6 +51,7 @@ const ViewSolarRadiation = () => {
             <Box sx={{ p: 2 }}>
                 <Stack spacing={3}>
                     {/* Basic Information */}
+                    <CustomRow label={'Last Updated'} value={dateFormatter(featureDrawerData?.updatedAt, "DATE_TIME_AM_PM")} />
                     <Box>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>

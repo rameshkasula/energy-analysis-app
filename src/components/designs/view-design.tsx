@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setThemeData } from "@/toolkit/slices/theme-slice";
 import AppDrawer from "@/common/app-drawer";
 import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
-import { STATUS, STATUS_COLORS } from "@/helpers/constants";
+import { dateFormatter, STATUS, STATUS_COLORS } from "@/helpers/constants";
 import useCurrency from "@/hooks/curreny-hook";
 
 const ViewDesign = () => {
@@ -173,10 +173,10 @@ const ViewDesign = () => {
                             </Grid>
                             <Grid item xs={6}>
                                 <Typography variant="subtitle2" color="text.secondary">
-                                    Created At
+                                    Last Updated
                                 </Typography>
                                 <Typography variant="body1">
-                                    {featureDrawerData?.createdAt ? new Date(featureDrawerData.createdAt).toLocaleDateString() : '-'}
+                                    {dateFormatter(featureDrawerData?.updatedAt, "DATE_TIME_AM_PM")}
                                 </Typography>
                             </Grid>
                         </Grid>

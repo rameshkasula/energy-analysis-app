@@ -1,6 +1,6 @@
 import { MRT_ColumnDef } from "material-react-table";
 import { Chip, ChipProps } from "@mui/material";
-import { IS_ACTIVE, IS_ACTIVE_COLORS, STATUS, STATUS_COLORS } from "@/helpers/constants";
+import { dateFormatter, IS_ACTIVE, IS_ACTIVE_COLORS, STATUS, STATUS_COLORS } from "@/helpers/constants";
 
 interface SolarRadiation {
     _id?: string;
@@ -20,6 +20,12 @@ interface SolarRadiation {
 
 export const useSolarRadiationColumns = () => {
     const columns: MRT_ColumnDef<SolarRadiation>[] = [
+        {
+            accessorKey: "name",
+            header: "Name",
+            size: 150,
+            Cell: ({ row }) => `${row?.original?.name || "N/A"}`,
+        },
         {
             accessorKey: "city",
             header: "City",
@@ -89,6 +95,15 @@ export const useSolarRadiationColumns = () => {
                         size="small"
                     />
                 );
+            },
+        },
+        {
+            accessorKey: "updatedAt",
+            header: "Last Updated",
+            size: 120,
+            Cell: ({ cell }) => {
+                const date = cell.getValue<string>();
+                return dateFormatter(date, "DATE_TIME_AM_PM");
             },
         },
     ];
