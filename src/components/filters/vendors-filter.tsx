@@ -19,7 +19,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
 import { IconPresentation, IconToolsKitchen } from "@tabler/icons-react";
-import Scrollbar from "@/common/scroll-bat";
+import Scrollbar from "@/common/scroll-bar";
 import { setFilterData } from "@/toolkit/slices/filter-slice";
 
 function VendorFilter() {
@@ -43,11 +43,11 @@ function VendorFilter() {
 
   const handleClick =
     (newPlacement: PopperPlacementType) =>
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorEl(event.currentTarget);
-      setOpen((prev) => placement !== newPlacement || !prev);
-      setPlacement(newPlacement);
-    };
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+        setOpen((prev) => placement !== newPlacement || !prev);
+        setPlacement(newPlacement);
+      };
 
   // handle search input change
 
@@ -62,8 +62,8 @@ function VendorFilter() {
 
     const filteredVendors = searchValue
       ? filtersData?.vendors?.filter((category: any) =>
-          category?.name?.toLowerCase().includes(searchValue.toLowerCase())
-        )
+        category?.name?.toLowerCase().includes(searchValue.toLowerCase())
+      )
       : filtersData?.vendors;
 
     setAvailableVendors(filteredVendors);

@@ -27,7 +27,6 @@ import {
 } from "@tabler/icons-react";
 import ViewSolarRadiation from "./view-solar-radiation";
 import CreateUpdateSolarRadiation from "./create-update-solar-radiation";
-import { createSolarRadiationSeed } from "@/seed/electricity-rate-seed";
 
 const SolarRadiationTable = () => {
     const columns = useSolarRadiationColumns();
@@ -38,18 +37,16 @@ const SolarRadiationTable = () => {
 
     const { pageIndex, pageSize } = solarRadiationData?.pagination || { pageIndex: 0, pageSize: 10 };
 
-    useEffect(() => {
+    const fetchData = useCallback(() => {
         dispatch(getAllSolarRadiation({
             pageIndex,
             pageSize
         }) as any);
     }, [dispatch, pageIndex, pageSize]);
 
-    // useEffect(() => {
-    //     createSolarRadiationSeed();
-    // }, []);
-
-
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const handlePaginationChange = useCallback(
         (pageData: any) => {

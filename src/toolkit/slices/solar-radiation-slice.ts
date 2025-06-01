@@ -78,9 +78,6 @@ export const getAllSolarRadiation = (payload?: {
             params: {
                 skip: (payload?.pageIndex || 0) * (payload?.pageSize || 10),
                 limit: payload?.pageSize || 10,
-                search: payload?.search,
-                city: payload?.city,
-                status: payload?.status,
             },
         });
 
@@ -124,6 +121,7 @@ export const createSolarRadiation = (payload: Omit<SolarRadiation, "_id" | "crea
         dispatch(setSolarRadiationData({ field: "isLoading", data: true }));
         const response = await axiosClient.post("/solar-radiation", payload);
 
+        const allData = getState().solarRadiation
         if (response.status === 201) {
             dispatch(
                 setThemeData({
@@ -136,11 +134,11 @@ export const createSolarRadiation = (payload: Omit<SolarRadiation, "_id" | "crea
                 } as any)
             );
 
-            const count = getState().solarRadiation?.rowsCount;
+            const count = allData?.rowsCount
             dispatch(
                 setSolarRadiationData({
                     field: "data",
-                    data: [response.data?.radiation, ...getState().solarRadiation?.data],
+                    data: [response.data?.data, ...allData?.data],
                 })
             );
             dispatch(
@@ -157,7 +155,7 @@ export const createSolarRadiation = (payload: Omit<SolarRadiation, "_id" | "crea
                 field: "toast",
                 data: {
                     open: true,
-                    message: error?.message || "Failed to create solar radiation data",
+                    message: error?.message || error?.response?.data?.message || error?.error?.message || "Failed to create solar radiation data",
                     type: "error",
                 },
             } as any)
@@ -173,6 +171,8 @@ export const updateSolarRadiation = (payload: Partial<SolarRadiation> & { id: st
         dispatch(setSolarRadiationData({ field: "isLoading", data: true }));
         const response = await axiosClient.put(`/solar-radiation/${payload.id}`, payload);
 
+        const allData = getState().solarRadiation
+
         if (response.status === 200) {
             dispatch(
                 setThemeData({
@@ -185,13 +185,10 @@ export const updateSolarRadiation = (payload: Partial<SolarRadiation> & { id: st
                 } as any)
             );
 
-            const allData = getState().solarRadiation?.data;
-            const updatedData = allData.map((item: SolarRadiation) => {
-                if (item._id === payload.id) {
-                    return { ...item, ...response.data?.radiation };
-                }
-                return item;
-            });
+            const filteredData = allData?.data?.filter((item: SolarRadiation) => item._id !== payload.id);
+
+            const updatedData = allData?.data?.length > 0 ? [response.data?.data, ...filteredData] : [response.data?.data];
+
 
             dispatch(
                 setSolarRadiationData({
@@ -207,7 +204,7 @@ export const updateSolarRadiation = (payload: Partial<SolarRadiation> & { id: st
                 field: "toast",
                 data: {
                     open: true,
-                    message: error?.message || "Failed to update solar radiation data",
+                    message: error?.message || error?.response?.data?.message || error?.error?.message || "Failed to update solar radiation data",
                     type: "error",
                 },
             } as any)
@@ -259,7 +256,7 @@ export const deleteSolarRadiation = (payload: { id: string }) => async (dispatch
                 field: "toast",
                 data: {
                     open: true,
-                    message: error?.message || "Failed to delete solar radiation data",
+                    message: error?.message || error?.response?.data?.message || error?.error?.message || "Failed to delete solar radiation data",
                     type: "error",
                 },
             } as any)

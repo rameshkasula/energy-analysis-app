@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Energy Analysis App
 
-## Getting Started
+A comprehensive energy analysis application built with Next.js, Material-UI, and Redux Toolkit.
 
-First, run the development server:
+## Version 1.0.0
 
+### Features Implemented
+
+#### Core Features
+- Electricity rates management and visualization
+- Design statistics tracking and analysis
+- City-wise design status monitoring
+- Interactive data visualization
+
+#### Electricity Rates Module
+- View electricity rates by city
+- Interactive line chart visualization
+- Real-time data updates
+- Pagination and filtering support
+
+#### Design Statistics Module
+- City-wise design statistics
+- Status tracking with color-coded indicators
+- Total designs count
+- Status breakdown (FINALIZED, REVIEW, REJECTED, etc.)
+- Sorted view by total designs
+
+#### UI/UX Features
+- Responsive design
+- Material-UI components
+- Dark/Light theme support
+- Interactive data tables
+- Custom status color schemes
+- Loading states and error handling
+
+#### Technical Features
+- TypeScript implementation
+- Redux Toolkit for state management
+- Next.js 13+ with App Router
+- Material-UI v5
+- Reusable components
+- Type-safe constants
+- Optimized performance with useMemo and useCallback
+- Dynamic imports for better code splitting
+
+### Getting Started
+
+#### Prerequisites
+- Node.js 16.x or higher
+- npm or yarn
+
+#### Installation
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/energy-analysis-app.git
+```
+
+2. Install dependencies
+```bash
+cd energy-analysis-app
+npm install
+# or
+yarn install
+```
+
+3. Run the development server
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Project Structure
+```
+src/
+├── components/
+│   ├── charts/
+│   ├── electricity-rates/
+│   ├── filters/
+│   └── workspace/
+├── constants/
+├── hooks/
+├── lib/
+├── toolkit/
+│   └── slices/
+└── utils/
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Status Colors
+The application uses a consistent color scheme for different statuses:
+- FINALIZED: Green (#2E7D32)
+- REVIEW: Orange (#E65100)
+- REJECTED: Red (#C62828)
+- DRAFT: Blue (#1565C0)
+- PENDING: Purple (#7B1FA2)
+- IN_PROGRESS: Cyan (#00838F)
+- COMPLETED: Light Green (#558B2F)
+- CANCELLED: Grey (#455A64)
 
-## Learn More
+### Contributing
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-To learn more about Next.js, take a look at the following resources:
+### License
+This project is licensed under the MIT License - see the LICENSE file for details
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Acknowledgments
+- Material-UI for the component library
+- Next.js team for the framework
+- Redux Toolkit for state management

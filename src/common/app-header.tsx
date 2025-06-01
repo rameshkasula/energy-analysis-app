@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useDispatch } from "react-redux";
 import { setThemeData } from "@/toolkit/slices/theme-slice";
+import { APP_NAME } from "@/helpers/constants";
 
 export default function AppHeader() {
   const dispatch = useDispatch();
@@ -60,7 +61,7 @@ export default function AppHeader() {
             <MenuIcon />
           </IconButton>
           <Typography noWrap variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
+            {APP_NAME}
           </Typography>
 
           {/* <ThemeToggle /> */}

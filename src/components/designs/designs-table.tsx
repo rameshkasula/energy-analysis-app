@@ -14,25 +14,28 @@ import {
     Typography,
 } from "@mui/material";
 import MDataGridTable from "@/lib/MDataGridTable";
-import { Fragment, useCallback, useEffect, useMemo } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setThemeData } from "@/toolkit/slices/theme-slice";
 import { IconPlus } from "@tabler/icons-react";
 import { useDesignsColumns } from "./designs-columns";
-import { getAllDesigns, setDesignsData } from "@/toolkit/slices/designs-slice";
+import { getAllDesigns, getSingleDesignAnalysis, setDesignsData } from "@/toolkit/slices/designs-slice";
 import {
     IconEdit,
     IconEye,
     IconTrash,
+    IconReportAnalytics
 } from "@tabler/icons-react";
 import ViewDesign from "./view-design";
 import CreateUpdateDesign from "./create-update-design";
+import ViewDesignAnalysis from "./view-design-analysis";
 
 
 
 const DesignsTable = () => {
     const columns = useDesignsColumns();
     const dispatch = useDispatch();
+    const [showAnalysis, setShowAnalysis] = useState(false);
 
     const designsData = useSelector((state: any) => state.designs);
     const themeData = useSelector((state: any) => state.theme);
@@ -58,6 +61,10 @@ const DesignsTable = () => {
         },
         [dispatch]
     );
+
+    const handleAnalysis = useCallback((id: string) => {
+        dispatch(getSingleDesignAnalysis({ id }) as any);
+    }, [dispatch]);
 
 
     // Memoize table configuration
@@ -111,10 +118,27 @@ const DesignsTable = () => {
             renderRowActions: ({ row }: { row: any }) => {
                 return (
                     <Stack direction="row" spacing={0.2}>
+                        {/* analysis button */}
+                        <Tooltip title="Analysis">
+                            <IconButton size="small" onClick={() => {
+                                handleAnalysis(row?.original?._id);
+                                setShowAnalysis(true);
+                                dispatch(
+                                    setThemeData({
+                                        field: "featurDrawerView",
+                                        data: true,
+                                    } as any)
+                                );
+                            }}>
+                                <IconReportAnalytics size={20} strokeWidth={1.5} />
+                            </IconButton>
+                        </Tooltip>
                         <Tooltip title="View">
                             <IconButton
                                 size="small"
                                 onClick={() => {
+                                    setShowAnalysis(false);
+
                                     dispatch(
                                         setThemeData({
                                             field: "featureDrawerData",
@@ -209,7 +233,8 @@ const DesignsTable = () => {
         <Fragment>
             <MDataGridTable title="Designs" data={table} />
             {themeData?.featureDrawer && <CreateUpdateDesign />}
-            {themeData?.featurDrawerView && <ViewDesign />}
+            {themeData?.featurDrawerView && (showAnalysis ?
+                <ViewDesignAnalysis /> : <ViewDesign />)}
         </Fragment>
     );
 };

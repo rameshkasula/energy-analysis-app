@@ -3,7 +3,7 @@ import { setThemeData } from "@/toolkit/slices/theme-slice";
 import AppDrawer from "@/common/app-drawer";
 import { CustomRow } from "@/common/app-drawer-row";
 import { Box, Chip, Stack, Typography } from "@mui/material";
-import { IS_ACTIVE } from "@/helpers/constants";
+import { dateFormatter, IS_ACTIVE } from "@/helpers/constants";
 
 const ViewElectricityRate = () => {
     const dispatch = useDispatch();
@@ -28,8 +28,8 @@ const ViewElectricityRate = () => {
                 <CustomRow label={'Status'} value={featureDrawerData?.status} />
                 <CustomRow label={'Active Status'} value={IS_ACTIVE[featureDrawerData?.isActive as keyof typeof IS_ACTIVE]} />
                 <CustomRow label={'Notes'} value={featureDrawerData?.notes} />
-                <CustomRow label={'Created At'} value={featureDrawerData?.createdAt} />
-                <CustomRow label={'Updated At'} value={featureDrawerData?.updatedAt} />
+                <CustomRow label={'Created At'} value={dateFormatter(featureDrawerData?.createdAt, "DATE_TIME_AM_PM")} />
+                <CustomRow label={'Updated At'} value={dateFormatter(featureDrawerData?.updatedAt, "DATE_TIME_AM_PM")} />
 
             </Box>
         </AppDrawer>

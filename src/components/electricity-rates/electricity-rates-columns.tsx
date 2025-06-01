@@ -1,20 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IS_ACTIVE, IS_ACTIVE_COLORS, STATUS_COLORS } from "@/helpers/constants";
+import { dateFormatter, IS_ACTIVE, IS_ACTIVE_COLORS, STATUS_COLORS } from "@/helpers/constants";
 import { Chip } from "@mui/material";
 import { useMemo } from "react";
 
 import moment from "moment";
+import useCurrency from "@/hooks/curreny-hook";
 
 export const useElectricityRatesColumns = () => {
+    const formatCurrency = useCurrency()
     const columns = useMemo(
         () => [
             { accessorKey: "city", header: "City", size: 120 },
-            { accessorKey: "rate", header: "Rate", size: 120 },
+            {
+                accessorKey: "rate", header: "Rate", size: 120,
+                Cell: ({ cell }: any) => {
+                    const rate = cell.getValue() || 0;
+                    return formatCurrency(rate);
+                },
+            },
             {
                 accessorKey: "createdAt", header: "Created At", size: 120,
                 Cell: ({ cell }: any) => {
-                    const date = moment(cell.getValue());
-                    return date.format("DD MMM YYYY HH:mm:ss");
+                    const date = cell.getValue() || "";
+                    return dateFormatter(date, "DATE_TIME_AM_PM");
                 },
             },
             {

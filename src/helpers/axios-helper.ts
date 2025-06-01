@@ -23,6 +23,6 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    return Promise.reject(error);
+    return Promise.reject((error.response && error.response.data) || 'Something went wrong')
   }
 );

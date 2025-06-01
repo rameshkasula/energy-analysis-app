@@ -2,18 +2,16 @@
 
 "use client";
 
-import * as React from "react";
+import React from "react";
 import moment from "moment";
-
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Paper, Box, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilterData } from "@/toolkit/slices/filter-slice";
 
-// ui / filters
 import CategoriesFilter from "./categories-filter";
 import DateRangeFilter from "./date-range-filter";
-// import VendorsFilter from "./vendors-filter";
-
+import CityFilter from "./city-filter";
+import StatusFilter from "./status-filter";
 
 function AppFilters() {
   const {
@@ -21,150 +19,70 @@ function AppFilters() {
     tempSelectedVendors,
     tempStartDate,
     tempEndDate,
-    // startDate,
-    // endDate,
     categories,
-    // vendors,
-    // selectedCategories,
-    // selectedVendors,
   } = useSelector((state: any) => state.filter);
 
   const dispatch = useDispatch();
 
   const handleApply = () => {
-    // apply the filters
-
-    // update the filter data
-
-    // 1. update the selected categories
-    dispatch(
-      setFilterData({
-        field: "selectedCategories",
-        data: tempSelectedCategories,
-      })
-    );
-
-    // 2. update the selected vendors
-    dispatch(
-      setFilterData({
-        field: "selectedVendors",
-        data: tempSelectedVendors,
-      })
-    );
-
-    // 3. update the start date
-    dispatch(
-      setFilterData({
-        field: "startDate",
-        data: tempStartDate,
-      })
-    );
-
-    // 4. update the end date
-
-    dispatch(
-      setFilterData({
-        field: "endDate",
-        data: tempEndDate,
-      })
-    );
+    dispatch(setFilterData({ field: "selectedCategories", data: tempSelectedCategories }));
+    dispatch(setFilterData({ field: "selectedVendors", data: tempSelectedVendors }));
+    dispatch(setFilterData({ field: "startDate", data: tempStartDate }));
+    dispatch(setFilterData({ field: "endDate", data: tempEndDate }));
   };
 
   const handleReset = () => {
-    // reset the filters
+    const selectedCategories = [...categories]?.map((item) => item?.id) || [];
 
-    // logic to reset the filters to the initial state
-    const selectedCategories =
-      [...categories].length > 0 ? [...categories].map((item) => item?.id) : [];
-
-    // 1. reset the selected categories  and temp selected categories
-    dispatch(
-      setFilterData({
-        field: "selectedCategories",
-        data: selectedCategories,
-      })
-    );
-
-    dispatch(
-      setFilterData({
-        field: "tempSelectedCategories",
-        data: selectedCategories,
-      })
-    );
-
-    // 2. reset the selected vendors
-    dispatch(
-      setFilterData({
-        field: "selectedVendors",
-        data: [],
-      })
-    );
-
-    // 3. reset the start date
-    dispatch(
-      setFilterData({
-        field: "startDate",
-        data: moment().startOf("day").toISOString(),
-      })
-    );
-
-    // 4. reset the end date
-
-    dispatch(
-      setFilterData({
-        field: "endDate",
-        data: moment().endOf("day").toISOString(),
-      })
-    );
+    dispatch(setFilterData({ field: "selectedCategories", data: selectedCategories }));
+    dispatch(setFilterData({ field: "tempSelectedCategories", data: selectedCategories }));
+    dispatch(setFilterData({ field: "selectedVendors", data: [] }));
+    dispatch(setFilterData({ field: "startDate", data: moment().startOf("day").toISOString() }));
+    dispatch(setFilterData({ field: "endDate", data: moment().endOf("day").toISOString() }));
   };
 
+  const Item = ({ title }: { title: string }) => {
+    return (
+      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+        {title}
+      </Typography>
+    )
+  }
+
   return (
-    <React.Fragment>
-      <Stack
-        direction={"row"}
-        spacing={2}
-        sx={{
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          marginY: 1,
-        }}
-      >
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-            flexWrap: "wrap",
-          }}
-        >
-          <DateRangeFilter />
+    <Stack
+      direction="row"
+      spacing={2}
+      sx={{
+        justifyContent: "space-between",
+        alignItems: "center",
+        mt: 1
+      }}
+    >
+      <Stack direction="row" spacing={2} flexWrap="wrap">
+        {/* <DateRangeFilter />
           <CategoriesFilter />
-          {/* <VendorsFilter /> */}
-          {/* <TestItem name="DateRangeFilter" /> */}
-          {/* <TestItem name="DateRangeFilter" /> */}
-
-          {/* <TestItem name="DateRangeFilter" /> */}
-        </Stack>
-
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-            // flexWrap: "wrap",
-          }}
-        >
-          <Button variant="outlined" size="small" onClick={handleReset}>
-            {"Reset"}
-          </Button>
-          <Button variant="contained" size="small" onClick={handleApply}>
-            {"Apply"}
-          </Button>
-        </Stack>
+          <CityFilter />
+          <StatusFilter /> */}
+        {/* <Item title="Date Range" />
+        <Item title="Categories" />
+        <Item title="Cities" />
+        <Item title="Status" /> */}
+        <DateRangeFilter />
+        {/* <CategoriesFilter /> */}
+        <CityFilter />
+        <StatusFilter />
       </Stack>
-    </React.Fragment>
+
+      <Stack direction="row" spacing={1} justifyContent="flex-end">
+        <Button variant="outlined" size="small" onClick={handleReset} sx={{ minWidth: 100 }}>
+          Reset
+        </Button>
+        <Button variant="contained" size="small" onClick={handleApply} sx={{ minWidth: 100 }}>
+          Apply
+        </Button>
+      </Stack>
+    </Stack>
   );
 }
 

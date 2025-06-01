@@ -22,6 +22,13 @@ const ViewSolarRadiation = () => {
                 data: null,
             } as any)
         );
+
+        dispatch(
+            setThemeData({
+                field: "featurDrawerView",
+                data: false,
+            } as any)
+        );
     };
 
     const getStatusColor = (status: string): "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning" => {

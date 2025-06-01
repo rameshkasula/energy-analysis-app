@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setThemeData } from "@/toolkit/slices/theme-slice";
 import { IconAssembly } from "@tabler/icons-react";
+import { APP_NAME } from "@/helpers/constants";
 
 const AppSidebar = () => {
   const pathname = usePathname();
@@ -124,7 +125,7 @@ const AppSidebar = () => {
 
         {isDrawerOpen && (
           <Typography variant="h6" sx={{ marginLeft: 1, color: "inherit" }}>
-            My App
+            {APP_NAME}
           </Typography>
         )}
       </Box>

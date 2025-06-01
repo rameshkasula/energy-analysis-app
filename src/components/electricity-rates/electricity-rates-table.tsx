@@ -30,7 +30,7 @@ import { useElectricityRatesColumns } from "./electricity-rates-columns";
 import { deleteElectricityRate, getAllElectricityRates, setElectricityRatesData } from "@/toolkit/slices/electricity-rates-slice";
 import CreateUpdateElectricityRate from "./create-update-electricity-rate";
 import ViewElectricityRate from "./view-electricity-rate";
-
+import { useDataFormatter } from "@/hooks/data-hook";
 
 const UserTable = () => {
     const columns = useElectricityRatesColumns();
@@ -39,19 +39,18 @@ const UserTable = () => {
     const themeData = useSelector((state: any) => state.theme);
     const electricityRatesData = useSelector((state: any) => state.electricityRates);
 
-    const { pageIndex, pageSize } = electricityRatesData?.pagination;
+    const { pageIndex, pageSize } = electricityRatesData?.pagination || { pageIndex: 0, pageSize: 10 };
 
-    // Fetch users when pagination changes
+    const fetchData = useCallback(() => {
+        dispatch(getAllElectricityRates() as any);
+    }, [dispatch]);
+
     useEffect(() => {
-        const fetchData = () => {
-            dispatch(getAllElectricityRates() as any);
-        };
         fetchData();
-    }, [dispatch, pageIndex, pageSize]);
+    }, [fetchData, pageIndex, pageSize]);
 
     const handlePaginationChange = useCallback(
         (pageData: number) => {
-            // console.log("handlePaginationChange", pageData)
             dispatch(
                 setElectricityRatesData({
                     field: "pagination",
@@ -59,20 +58,120 @@ const UserTable = () => {
                 } as any)
             );
         },
-        [dispatch, pageIndex, pageSize]
+        [dispatch]
     );
 
     const handleDelete = useCallback((row: any) => {
         dispatch(deleteElectricityRate({ id: row?._id }) as any)
-    }, [dispatch])
+    }, [dispatch]);
 
+    const handleView = useCallback((row: any) => {
+        dispatch(
+            setThemeData({
+                field: "featureDrawerData",
+                data: row?.original,
+            } as any)
+        );
+
+        dispatch(
+            setThemeData({
+                field: "featurDrawerView",
+                data: true,
+            } as any)
+        );
+    }, [dispatch]);
+
+    const handleEdit = useCallback((row: any) => {
+        dispatch(
+            setThemeData({
+                field: "featureDrawerData",
+                data: row?.original,
+            } as any)
+        );
+
+        dispatch(
+            setThemeData({
+                field: "featureDrawer",
+                data: true,
+            } as any)
+        );
+    }, [dispatch]);
+
+    const handleAdd = useCallback(() => {
+        dispatch(
+            setThemeData({
+                field: "featureDrawer",
+                data: true,
+            } as any)
+        );
+    }, [dispatch]);
+
+    const formattedData = useDataFormatter(electricityRatesData?.data);
+
+    const renderRowActions = useCallback(({ row }: { row: any }) => (
+        <Stack direction="row" spacing={0.2}>
+            <Tooltip title="View">
+                <IconButton
+                    size="small"
+                    onClick={() => handleView(row)}
+                >
+                    <IconEye size={20} strokeWidth={1.5} />
+                </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Edit">
+                <IconButton
+                    size="small"
+                    onClick={() => handleEdit(row)}
+                >
+                    <IconEdit size={20} strokeWidth={1.5} />
+                </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Delete">
+                <IconButton
+                    size="small"
+                    onClick={() => handleDelete(row?.original)}
+                >
+                    <IconTrash size={20} strokeWidth={1.5} />
+                </IconButton>
+            </Tooltip>
+        </Stack>
+    ), [handleView, handleEdit, handleDelete]);
+
+    const renderTopToolbar = useCallback(({ table }: any) => (
+        <Box
+            py={1}
+            sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+            }}
+        >
+            <Typography variant="h6" id="tableTitle">
+                Electricity Rates
+            </Typography>
+            <Box display="flex" gap={1} width="max-content">
+                <MRT_GlobalFilterTextField table={table} />
+                <MRT_ToggleFiltersButton table={table} size="large" />
+                <MRT_ShowHideColumnsButton table={table} size="large" />
+                <Button
+                    size="small"
+                    color="primary"
+                    onClick={handleAdd}
+                >
+                    Add  <IconPlus size={20} style={{ paddingLeft: "2px" }} />
+                </Button>
+            </Box>
+        </Box>
+    ), [handleAdd]);
 
     // Memoize table configuration
     const table = useMemo(
         () => ({
             columns,
-            data: electricityRatesData?.data || [],
-            getRowId: (row: any) => row._id || row?.id,
+            data: formattedData,
+            getRowId: (row: any) => row?._id || row?.id,
             displayColumnDefOptions: {
                 "mrt-row-actions": {
                     size: 20,
@@ -103,8 +202,8 @@ const UserTable = () => {
             state: {
                 isLoading: electricityRatesData?.isLoading,
                 pagination: {
-                    pageIndex: electricityRatesData?.pagination.pageIndex || 0,
-                    pageSize: electricityRatesData?.pagination.pageSize || 10,
+                    pageIndex: pageIndex,
+                    pageSize: pageSize,
                 },
                 columnPinning: { left: ["mrt-row-actions", "mrt-row-select"] },
             },
@@ -113,109 +212,21 @@ const UserTable = () => {
                 const newPagination = updatedPagination(electricityRatesData?.pagination);
                 handlePaginationChange(newPagination);
             },
-
-            // row actions
-            renderRowActions: ({ row }: { row: any }) => {
-                // console.log("row", row);
-                return (
-                    <Stack direction="row" spacing={0.2}>
-                        <Tooltip title="View">
-                            <IconButton
-                                size="small"
-                                onClick={() => {
-                                    dispatch(
-                                        setThemeData({
-                                            field: "featureDrawerData",
-                                            data: row?.original,
-                                        } as any)
-                                    );
-
-                                    dispatch(
-                                        setThemeData({
-                                            field: "featurDrawerView",
-                                            data: true,
-                                        } as any)
-                                    );
-                                }}
-                            >
-                                <IconEye size={20} strokeWidth={1.5} />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title="Edit">
-                            <IconButton size="small" onClick={() => {
-                                dispatch(
-                                    setThemeData({
-                                        field: "featureDrawerData",
-                                        data: row?.original,
-                                    } as any)
-                                );
-
-                                dispatch(
-                                    setThemeData({
-                                        field: "featureDrawer",
-                                        data: true,
-                                    } as any)
-                                );
-
-                                // setDrawerTitle("Edit Electricity Rate");
-                            }}>
-                                <IconEdit size={20} strokeWidth={1.5} />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title="Delete">
-                            <IconButton size="small" onClick={() => {
-                                handleDelete(row?.original)
-                            }}>
-                                <IconTrash size={20} strokeWidth={1.5} />
-                            </IconButton>
-                        </Tooltip>
-                    </Stack>
-                );
-            },
-
-            // render top toolbar
-            renderTopToolbar: ({ table }: any) => (
-                <Box
-                    py={1}
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        // marginX: 4,
-                    }}
-                >
-                    <Typography variant="h6" id="tableTitle">
-                        Electricity Rates
-                    </Typography>
-                    <Box display="flex" gap={1} width="max-content">
-                        <MRT_GlobalFilterTextField table={table} />
-
-                        <MRT_ToggleFiltersButton table={table} size="large" />
-                        <MRT_ShowHideColumnsButton table={table} size="large" />
-
-                        {/* create button */}
-                        <Button
-                            size="small"
-                            color="primary"
-                            variant="outlined"
-                            onClick={() => {
-                                dispatch(
-                                    setThemeData({
-                                        field: "featureDrawer",
-                                        data: true,
-                                    } as any)
-                                );
-                            }}
-                        >
-                            Add  <IconPlus size={20} style={{ paddingLeft: "2px" }} />
-                        </Button>
-                    </Box>
-                </Box>
-            ),
+            renderRowActions,
+            renderTopToolbar,
         }),
-        [columns, handlePaginationChange, electricityRatesData?.isLoading]
+        [
+            columns,
+            formattedData,
+            electricityRatesData?.isLoading,
+            electricityRatesData?.pagination,
+            electricityRatesData?.rowsCount,
+            pageIndex,
+            pageSize,
+            handlePaginationChange,
+            renderRowActions,
+            renderTopToolbar
+        ]
     );
 
     return (

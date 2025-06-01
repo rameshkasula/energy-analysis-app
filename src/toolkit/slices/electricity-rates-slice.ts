@@ -71,15 +71,7 @@ export const getAllElectricityRates = (payload?: {
 }) => async (dispatch: any) => {
     try {
         dispatch(setElectricityRatesData({ field: "isLoading", data: true }));
-        const response = await axiosClient.get("/electricity-rates", {
-            params: {
-                page: payload?.pageIndex || 0,
-                limit: payload?.pageSize || 10,
-                search: payload?.search,
-                city: payload?.city,
-                status: payload?.status,
-            },
-        });
+        const response = await axiosClient.get("/electricity-rates");
 
 
         const data = response.data?.data?.rates;
@@ -134,11 +126,13 @@ export const createElectricityRate = (payload: Omit<ElectricityRate, "_id" | "cr
                 } as any)
             );
 
-            const count = getState().electricityRates?.rowsCount;
+            const allRates = getState().electricityRates?.data;
+
+            const count = allRates?.length;
             dispatch(
                 setElectricityRatesData({
                     field: "data",
-                    data: [response.data?.electricityRate, ...getState().electricityRates?.data],
+                    data: [response.data?.data, ...getState().electricityRates?.data],
                 })
             );
             dispatch(
@@ -171,6 +165,9 @@ export const updateElectricityRate = (payload: Partial<ElectricityRate> & { id: 
         dispatch(setElectricityRatesData({ field: "isLoading", data: true }));
         const response = await axiosClient.put(`/electricity-rates/${payload.id}`, payload);
 
+        const allRates = getState().electricityRates
+
+
         if (response.status === 200) {
             dispatch(
                 setThemeData({
@@ -182,14 +179,9 @@ export const updateElectricityRate = (payload: Partial<ElectricityRate> & { id: 
                     },
                 } as any)
             );
+            const filteredData = allRates?.data?.filter((rate: ElectricityRate) => rate._id !== payload.id);
 
-            const allRates = getState().electricityRates?.data;
-            const updatedRates = allRates.map((rate: ElectricityRate) => {
-                if (rate._id === payload.id) {
-                    return { ...rate, ...response.data?.electricityRate };
-                }
-                return rate;
-            });
+            const updatedRates = allRates?.data?.length > 0 ? [response.data?.data, ...filteredData] : [response.data?.data];
 
             dispatch(
                 setElectricityRatesData({
@@ -197,7 +189,11 @@ export const updateElectricityRate = (payload: Partial<ElectricityRate> & { id: 
                     data: updatedRates,
                 })
             );
+
         }
+
+
+
     } catch (error: any) {
         console.log(error);
         dispatch(
@@ -211,6 +207,7 @@ export const updateElectricityRate = (payload: Partial<ElectricityRate> & { id: 
             } as any)
         );
     } finally {
+
         dispatch(setElectricityRatesData({ field: "isLoading", data: false }));
     }
 };

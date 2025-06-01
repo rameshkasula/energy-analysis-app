@@ -34,9 +34,12 @@ interface Design {
 
 interface DesignsState {
     data: Design[];
+    stats: any;
     isLoading: boolean;
     error: string | null;
     rowsCount: number;
+    analysis: any;
+    singleAnalysis: any;
     pagination: {
         pageIndex: number;
         pageSize: number;
@@ -52,9 +55,12 @@ type SetDesignsDataPayload = {
 
 const initialState: DesignsState = {
     data: [],
+    stats: {},
     isLoading: false,
     error: null,
     rowsCount: 0,
+    analysis: [],
+    singleAnalysis: {},
     pagination: {
         pageIndex: 0,
         pageSize: 10,
@@ -278,4 +284,104 @@ export const deleteDesign = (payload: any) => async (dispatch: any, getState: an
     } finally {
         dispatch(setDesignsData({ field: "isLoading", data: false }));
     }
-}; 
+};
+
+// get single design analysis
+export const getSingleDesignAnalysis = (payload: any) => async (dispatch: any) => {
+    try {
+        dispatch(setDesignsData({ field: "isLoading", data: true }));
+
+        const response = await axiosClient.get(`analysis/${payload?.id}/analyze`);
+
+        if (response.status === 200) {
+            dispatch(setDesignsData({ field: "singleAnalysis", data: response.data?.data }));
+        }
+    } catch (error: any) {
+        console.log(error);
+        dispatch(setDesignsData({ field: "singleAnalysis", data: {} }));
+
+        // set toast
+        dispatch(
+            setThemeData({
+                field: "toast",
+                data: {
+                    open: true,
+                    message: error?.message || "Failed to get design analysis",
+                    type: "error",
+                },
+            } as any)
+        );
+    } finally {
+        dispatch(setDesignsData({ field: "isLoading", data: false }));
+    }
+}
+
+// get compare designs
+export const getCompareDesigns = (payload: any) => async (dispatch: any) => {
+    try {
+        dispatch(setDesignsData({ field: "isLoading", data: true }));
+
+        const response = await axiosClient.get(`/designs/compare`, {
+            params: {
+                ids: payload?.ids
+            }
+        });
+
+        if (response.status === 200) {
+            dispatch(setDesignsData({ field: "analysis", data: response.data?.designs }) as any);
+        }
+
+    } catch (error: any) {
+
+        // set toast
+        dispatch(
+            setThemeData({
+                field: "toast",
+                data: {
+                    open: true,
+                    message: error?.message || error?.response?.data?.message || error?.error?.message || "Failed to get compare designs",
+                    type: "error",
+                },
+            } as any)
+        );
+
+    } finally {
+        dispatch(setDesignsData({ field: "isLoading", data: false }));
+    }
+}
+
+// get designs stats
+export const getDesignsStats = (payload: any) => async (dispatch: any) => {
+    try {
+        dispatch(setDesignsData({ field: "isLoading", data: true }));
+        // if payload is empty, then get all cities
+        const response = await axiosClient.get(`/designs/stats`, {
+            params: {
+                city: payload?.length > 0 ? payload : null
+            }
+        });
+
+        console.log(response.data, "response.data?.data");
+
+        if (response.status === 200) {
+            dispatch(setDesignsData({ field: "stats", data: response.data?.data }));
+        }
+
+    } catch (error: any) {
+        console.log(error);
+
+        // set toast
+        dispatch(
+            setThemeData({
+                field: "toast",
+                data: {
+                    open: true,
+                    message: error?.message || error?.response?.data?.message || error?.error?.message || "Failed to get designs stats",
+                    type: "error",
+                },
+            } as any)
+        );
+    } finally {
+        dispatch(setDesignsData({ field: "isLoading", data: false }));
+    }
+}

@@ -2,6 +2,7 @@ import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import { Box, SxProps } from "@mui/material";
 import { styled } from "@mui/system";
+import { useEffect, useRef } from "react";
 
 const SimpleBarStyle = styled(SimpleBar)(() => ({
   maxHeight: "100%",
@@ -14,6 +15,14 @@ interface PropsType {
 
 const Scrollbar = (props: PropsType) => {
   const { children, sx, ...other } = props;
+  const scrollbarRef = useRef<any>(null);
+
+  useEffect(() => {
+    // Force SimpleBar to recalculate on mount and when children change
+    if (scrollbarRef.current) {
+      scrollbarRef.current.recalculate();
+    }
+  }, [children]);
 
   const isMobile =
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -24,7 +33,7 @@ const Scrollbar = (props: PropsType) => {
   }
 
   return (
-    <SimpleBarStyle sx={sx} {...other}>
+    <SimpleBarStyle ref={scrollbarRef} sx={sx} {...other}>
       {children}
     </SimpleBarStyle>
   );

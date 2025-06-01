@@ -3,10 +3,15 @@ import { setThemeData } from "@/toolkit/slices/theme-slice";
 import AppDrawer from "@/common/app-drawer";
 import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
 import { STATUS, STATUS_COLORS } from "@/helpers/constants";
+import useCurrency from "@/hooks/curreny-hook";
 
 const ViewDesign = () => {
     const dispatch = useDispatch();
     const { featureDrawerData } = useSelector((state: any) => state.theme);
+
+    const formatCurrency = useCurrency();
+
+    const designData = useSelector((state: any) => state.designs);
 
     const onClose = () => {
         dispatch(
@@ -71,6 +76,7 @@ const ViewDesign = () => {
             onClose={onClose}
             title="View Design"
             width={600}
+            isLoading={designData?.isLoading}
         >
             <Box sx={{ p: 2 }}>
                 <Stack spacing={3}>
