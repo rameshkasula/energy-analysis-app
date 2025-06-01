@@ -13,18 +13,18 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import { mkConfig } from "export-to-csv";
+import { download, generateCsv, mkConfig } from "export-to-csv";
 import MDataGridTable from "@/lib/MDataGridTable";
 import { Fragment, useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setThemeData } from "@/toolkit/slices/theme-slice";
 import AppMailReport from "@/common/send-email-report";
-
 import {
     IconEdit,
     IconEye,
     IconTrash,
     IconPlus,
+    IconDownload,
 } from "@tabler/icons-react";
 import { useElectricityRatesColumns } from "./electricity-rates-columns";
 import { deleteElectricityRate, getAllElectricityRates, setElectricityRatesData } from "@/toolkit/slices/electricity-rates-slice";
@@ -155,16 +155,38 @@ const UserTable = () => {
                 <MRT_GlobalFilterTextField table={table} />
                 <MRT_ToggleFiltersButton table={table} size="large" />
                 <MRT_ShowHideColumnsButton table={table} size="large" />
+
+                <IconButton
+                    size="small"
+                    onClick={handleExportData}
+                >
+                    <IconDownload size={20} strokeWidth={1.5} />
+                </IconButton>
+
                 <Button
                     size="small"
                     color="primary"
                     onClick={handleAdd}
+                    endIcon={<IconPlus size={20} strokeWidth={1.5} />}
+                    variant="contained"
                 >
-                    Add  <IconPlus size={20} style={{ paddingLeft: "2px" }} />
+                    Add
                 </Button>
             </Box>
         </Box>
     ), [handleAdd]);
+
+    const csvConfig = mkConfig({
+        fieldSeparator: ",",
+        decimalSeparator: ".",
+        useKeysAsHeaders: true,
+    });
+
+    const handleExportData = () => {
+        const csv = generateCsv(csvConfig)(formattedData);
+        download(csvConfig)(csv);
+    };
+
 
     // Memoize table configuration
     const table = useMemo(
